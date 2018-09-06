@@ -29,3 +29,8 @@ variable "private_subnet_cidr" {
     description = "CIDR for the Private Subnet"
     default = "10.0.2.0/24"
 }
+
+variable "orgip" {
+    description = "IP address cidr for your organization"
+    default = "103.6.32.0/24" #some value
+}

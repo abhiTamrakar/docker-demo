@@ -10,7 +10,7 @@ module "vpc" {
   public_cidr = "${var.public_subnet_cidr}"
   private_cidr = "${var.private_subnet_cidr}"
   ssh_key = "${var.aws_key_name}"
-  organization_ip = "103.6.32.0/24"
+  organization_ip = "${var.orgip}"
 }
 
 module "instances" {
@@ -20,7 +20,7 @@ module "instances" {
   public_subnet_id = "${module.vpc.publicid}"
   private_subnet_id = "${module.vpc.privateid}"
   amiid = "${lookup(var.amis, var.aws_region)}"
-  organization_ip = "103.6.32.0/24"
+  organization_ip = "${var.orgip}"
   vpccidr = "${var.vpc_cidr}"
   private_cidr = "${var.private_subnet_cidr}"
 }

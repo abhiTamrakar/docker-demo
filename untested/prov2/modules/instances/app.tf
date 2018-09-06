@@ -12,18 +12,6 @@ resource "aws_security_group" "demo2_rorsg" {
         cidr_blocks = ["${var.organization_ip}"]
     }
     ingress {
-        from_port = 9200
-        to_port = 9200
-        protocol = "tcp"
-        cidr_blocks = ["${var.vpc_cidr}"]
-    }
-    ingress {
-        from_port = 5601
-        to_port = 5601
-        protocol = "tcp"
-        cidr_blocks = ["${var.organization_ip}"]
-    }
-    ingress {
         from_port = -1
         to_port = -1
         protocol = "icmp"
@@ -33,16 +21,28 @@ resource "aws_security_group" "demo2_rorsg" {
         from_port = 3306
         to_port = 3306
         protocol = "tcp"
-        cidr_blocks = ["${var.private_subnet_cidr}"]
+        cidr_blocks = ["${var.private_cidr}"]
     }
     egress {
         from_port = 24224
         to_port = 24224
         protocol = "tcp"
-        cidr_blocks = ["${var.private_subnet_cidr}"]
+        cidr_blocks = ["${var.private_cidr}"]
     }	
+    egress {
+        from_port = 9200
+        to_port = 9200
+        protocol = "tcp"
+        cidr_blocks = ["${var.private_cidr}"]
+    }
+    egress {
+        from_port = 443
+        to_port = 443
+        protocol = "https"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
 
-    vpc_id = "${var.vpcid}"
+    vpc_id = "${var.vpc_id}"
 
     tags {
         Name = "WebServerSG demo2"
@@ -50,12 +50,12 @@ resource "aws_security_group" "demo2_rorsg" {
 }
 
 resource "aws_instance" "demo2_rorapp" {
-    ami = "${lookup(var.amis, var.aws_region)}"
+    ami = "${var.amiid}"
     availability_zone = "us-east-2a"
     instance_type = "t2.micro"
-    key_name = "${var.aws_key_name}"
+    key_name = "${var.ssh_key}"
     vpc_security_group_ids = ["${aws_security_group.demo2_rorsg.id}"]
-    subnet_id = "${var.publicid}"
+    subnet_id = "${var.public_subnet_id}"
     associate_public_ip_address = true
     source_dest_check = false
 

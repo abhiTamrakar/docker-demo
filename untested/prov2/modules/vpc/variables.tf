@@ -1,9 +1,14 @@
-variable "vpc_cidr" {
+variable "vpccidr" {
 }
 
-variable "public_subnet_cidr" {
+variable "public_cidr" {
 }
 
-variable "public_subnet_cidr" {
+variable "private_cidr" {
 }
 
+variable "organization_ip" {
+}
+
+variable "ssh_key" {
+}

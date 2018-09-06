@@ -9,20 +9,25 @@ resource "aws_security_group" "demo2_dbsg" {
         from_port = 3306
         to_port = 3306
         protocol = "tcp"
-        security_groups = ["${var.vpc_cidr}"]
+        cidr_blocks = ["${var.vpccidr}"]
     }
-
+    ingress {
+        from_port = 9200
+        to_port = 9200
+        protocol = "tcp"
+        cidr_blocks = ["${var.vpccidr}"]
+    }
     ingress {
         from_port = 22
         to_port = 22
         protocol = "tcp"
-        cidr_blocks = ["${var.vpc_cidr}"]
+        cidr_blocks = ["${var.vpccidr}"]
     }
     ingress {
         from_port = -1
         to_port = -1
         protocol = "icmp"
-        cidr_blocks = ["${var.vpc_cidr}"]
+        cidr_blocks = ["${var.vpccidr}"]
     }
     egress {
         from_port = 80
@@ -30,8 +35,20 @@ resource "aws_security_group" "demo2_dbsg" {
         protocol = "tcp"
         cidr_blocks = ["0.0.0.0/0"]
     }
+    egress {
+        from_port = 443
+        to_port = 443
+        protocol = "tcp"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+    egress {
+        from_port = 5601
+        to_port = 5601
+        protocol = "tcp"
+        cidr_blocks = ["${var.vpccidr}"]
+    }
 
-    vpc_id = "${var.vpcid}"
+    vpc_id = "${var.vpc_id}"
 
     tags {
         Name = "DB server sg demo2"
@@ -39,12 +56,12 @@ resource "aws_security_group" "demo2_dbsg" {
 }
 
 resource "aws_instance" "demo2_db_instance" {
-    ami = "${lookup(var.amis, var.aws_region)}"
+    ami = "${var.amiid}"
     availability_zone = "us-east-2a"
     instance_type = "t2.medium"
-    key_name = "${var.aws_key_name}"
+    key_name = "${var.ssh_key}"
     vpc_security_group_ids = ["${aws_security_group.demo2_dbsg.id}"]
-    subnet_id = "${var.privateid}"
+    subnet_id = "${var.private_subnet_id}"
     source_dest_check = false
 
     tags {

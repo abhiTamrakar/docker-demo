@@ -1,17 +1,23 @@
-variable "vpcid" {
+variable "vpc_id" {
+}
+
+variable "amiid" {
 }
 
 variable "public_subnet_id" {
 }
 
-variable "public_subnet_id" {
+variable "private_subnet_id" {
 }
 
 variable "organization_ip" {
 }
 
-variable "private_subnet_cidr" {
+variable "private_cidr" {
 }
 
-variable "vpc_cidr" {
+variable "vpccidr" {
+}
+
+variable "ssh_key" {
 }

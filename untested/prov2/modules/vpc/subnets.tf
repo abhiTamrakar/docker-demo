@@ -8,7 +8,7 @@ resource "aws_internet_gateway" "demo2_igw" {
 resource "aws_subnet" "demo2_public" {
     vpc_id = "${aws_vpc.demo2_vpc.id}"
 
-    cidr_block = "${var.public_subnet_cidr}"
+    cidr_block = "${var.public_cidr}"
     availability_zone = "us-east-2a"
 
     tags {
@@ -40,7 +40,7 @@ resource "aws_route_table_association" "demo2_public_assoc" {
 resource "aws_subnet" "demo2_private" {
     vpc_id = "${aws_vpc.demo2_vpc.id}"
 
-    cidr_block = "${var.private_subnet_cidr}"
+    cidr_block = "${var.private_cidr}"
     availability_zone = "us-east-2a"
 
     tags {

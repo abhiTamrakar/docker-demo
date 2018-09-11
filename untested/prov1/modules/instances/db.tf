@@ -11,6 +11,12 @@ resource "aws_security_group" "demo2_dbsg" {
         protocol = "tcp"
         cidr_blocks = ["${var.vpccidr}"]
     }
+    ingress { # fluentd
+        from_port = 24224
+        to_port = 24224
+        protocol = "tcp"
+        cidr_blocks = ["${var.vpccidr}"]
+    }
     ingress {
         from_port = 9200
         to_port = 9200
@@ -51,7 +57,7 @@ resource "aws_security_group" "demo2_dbsg" {
     vpc_id = "${var.vpc_id}"
 
     tags {
-        Name = "DB server sg demo2"
+        Name = "Data server sg demo2"
     }
 }
 
@@ -65,7 +71,7 @@ resource "aws_instance" "demo2_db_instance" {
     source_dest_check = false
 
     tags {
-        Name = "DB server instance demo2"
+        Name = "Data server instance demo2"
     }
 
     user_data = <<HEREDOC

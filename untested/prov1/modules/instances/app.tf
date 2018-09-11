@@ -12,6 +12,12 @@ resource "aws_security_group" "demo2_rorsg" {
         cidr_blocks = ["${var.organization_ip}"]
     }
     ingress {
+        from_port = 9100
+        to_port = 9100
+        protocol = "tcp"
+        cidr_blocks = ["${var.private_cidr}"]
+    }
+    ingress {
         from_port = -1
         to_port = -1
         protocol = "icmp"

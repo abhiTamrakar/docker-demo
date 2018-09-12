@@ -46,7 +46,7 @@ end
 else
 
 template '/etc/td-agent/conf.d/client.conf' do
-  source 'server.conf.erb'
+  source 'client.conf.erb'
   mode 0644
   variables(es_host: node['es_host'])
 end
@@ -57,4 +57,3 @@ cookbook_file '/etc/td-agent/conf.d/extra.conf' do
 end
 
 end
-

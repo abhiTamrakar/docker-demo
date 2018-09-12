@@ -1,0 +1,6 @@
+- module: elasticsearch
+  metricsets:
+    - node
+    - node_stats
+  period: 10s
+  hosts: ["<%= @es_host %>:9200"]

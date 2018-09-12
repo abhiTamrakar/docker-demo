@@ -1,0 +1,12 @@
+defaults: &default
+  adapter: mysql2
+  encoding: utf8
+  pool: 5
+  socket: /var/run/mysql-server/mysqld.sock
+
+development:
+  <<: *default
+  host: <%= @dbhost %>
+  username: <%= @dbuser %>
+  password: <%= @dbpassword %>
+  database: <%= @dbname %>

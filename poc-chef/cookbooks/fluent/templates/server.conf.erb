@@ -1,0 +1,14 @@
+<match *.**>
+  @type copy
+  @id output_copy
+  <store>
+    @type elasticsearch
+    host <%= @es_host %>
+    port 9200
+    logstash_format true
+    <buffer>
+      @type file
+      path /var/log/td-agent/buffer/td
+    </buffer>
+  </store>
+</match>

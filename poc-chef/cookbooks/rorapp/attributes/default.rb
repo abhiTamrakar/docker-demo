@@ -1,0 +1,11 @@
+default['dbhost'] = ''
+default['dbuser'] = 'root'
+default['dbpassword'] = '1234'
+default['dbname'] = 'project_management'
+default['ext_ip'] = ''
+default['es_host'] = ''
+default['modules'] = %w(system prometheus elasticsearch mysql)
+default['metrics_host'] = ''
+default['mysql_host'] = ''
+default['hosts'] = ''
+default['configs'] = %w(rorapp kibana)

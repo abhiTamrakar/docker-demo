@@ -1,0 +1,8 @@
+# Kibana is served by a back end server. This setting specifies the port to use.
+server.port: 5601
+server.host: "127.0.0.1"
+server.basePath: "/kibana"
+server.rewriteBasePath: true
+elasticsearch.url: "http://<%= @es_host %>:9200"
+kibana.index: ".kibana"
+kibana.defaultAppId: "home"

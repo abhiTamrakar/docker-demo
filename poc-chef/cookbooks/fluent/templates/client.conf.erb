@@ -1,0 +1,17 @@
+<match *.**>
+  @type copy
+  @id output_ror
+  <store>
+  @type forward
+    <server>
+      name demo_efk
+      host <%= @es_host %>
+      port 24224
+      weight 60
+    </server>
+    <buffer>
+      @type file
+      path /var/log/td-agent/buffer/td
+    </buffer>
+  </store>
+</match>

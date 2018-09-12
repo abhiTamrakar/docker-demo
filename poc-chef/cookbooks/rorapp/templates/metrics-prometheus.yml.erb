@@ -1,0 +1,7 @@
+
+- module: prometheus
+  metricsets:
+    - stats
+  period: 10s
+  hosts: ["<%= @metrics_host %>:9090"]
+  metrics_path: /metrics

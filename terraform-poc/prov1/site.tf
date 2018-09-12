@@ -35,3 +35,6 @@ output "app_endpoint" {
    value = "${module.instances.ror_ip}"
 }
 
+output "db_endpoint" {
+   value = "${module.instances.db_ip}"
+}

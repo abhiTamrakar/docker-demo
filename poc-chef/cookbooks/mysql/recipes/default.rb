@@ -20,5 +20,9 @@ socket=/var/run/mysql-server/mysqld.sock"
 end
 
 execute 'mysql|configure grant' do
-  command "mysql --defaults-extra-file=db.conf -e \"GRANT ALL ON *.* to #{node['dbuser']}@'%' IDENTIFIED BY #{node['dbpassword']};FLUSH PRIVILEGES;\""
+  command "mysql --defaults-extra-file=db.conf -e \"GRANT ALL ON *.* to #{node['dbuser']}@'%' IDENTIFIED BY #{node['dbpassword']};\""
+end
+
+execute 'mysql|configure grant flush' do
+  command "mysql --defaults-extra-file=db.conf -e \"FLUSH PRIVILEGES;\""
 end

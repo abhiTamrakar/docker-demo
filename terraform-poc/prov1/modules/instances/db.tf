@@ -53,6 +53,12 @@ resource "aws_security_group" "demo2_dbsg" {
         protocol = "tcp"
         cidr_blocks = ["${var.vpccidr}"]
     }
+    egress {
+        from_port = 123
+        to_port = 123
+        protocol = "tcp"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
 
     vpc_id = "${var.vpc_id}"
 

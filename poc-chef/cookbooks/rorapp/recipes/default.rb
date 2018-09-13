@@ -62,7 +62,7 @@ execute 'rake db:migrate' do
   action :run
 end
 
-execute "rails s -b node['ext_ip'] &" do
+execute "nohup rails server -b 0.0.0.0 &" do
   cwd '/var/www/railsapp/project_management_demo'
   action :run
 end

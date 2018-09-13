@@ -46,3 +46,8 @@ end
 systemd_unit 'metricbeat.service' do
   action [:enable, :restart]
 end
+
+execute 'metricbeat setup' do
+  action :run
+  ignore_failure true
+end

@@ -62,7 +62,8 @@ execute 'rake db:migrate' do
   action :run
 end
 
-execute "nohup rails server -b 0.0.0.0 &" do
+execute "sudo nohup rails server -b 0.0.0.0 &" do
   cwd '/var/www/railsapp/project_management_demo'
   action :run
+  retries 2
 end

@@ -24,6 +24,12 @@ resource "aws_security_group" "demo2_dbsg" {
         cidr_blocks = ["${var.vpccidr}"]
     }
     ingress {
+        from_port = 9100
+        to_port = 9100
+        protocol = "tcp"
+        cidr_blocks = ["${var.vpccidr}"]
+    }
+    ingress {
         from_port = 22
         to_port = 22
         protocol = "tcp"
@@ -57,6 +63,12 @@ resource "aws_security_group" "demo2_dbsg" {
         from_port = 123
         to_port = 123
         protocol = "tcp"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+    egress {
+        from_port = 123
+        to_port = 123
+        protocol = "udp"
         cidr_blocks = ["0.0.0.0/0"]
     }
 

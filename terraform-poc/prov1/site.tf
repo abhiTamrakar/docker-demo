@@ -31,8 +31,12 @@ output "nat_endpoint" {
    value = "${module.vpc.natip}"
 }
 
-output "app_endpoint" {
+output "app_pubendpoint" {
    value = "${module.instances.ror_ip}"
+}
+
+output "app_privendpoint" {
+   value = "${module.instances.ror_privip}"
 }
 
 output "db_endpoint" {

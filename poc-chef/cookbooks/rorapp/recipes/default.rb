@@ -3,11 +3,11 @@
 # Recipe:: default
 #
 
-package %w(ruby ruby-dev ruby-bundler libmysqlclient-dev build-essential) do
+package %w(ruby ruby-dev libmysqlclient-dev build-essential) do
   action :install
 end
 
-execute "gem install nio4r mysql2" do
+execute "gem install bundler nio4r mysql2" do
   action :run
 end
 

@@ -62,11 +62,25 @@ execute 'rake db:migrate' do
   action :run
 end
 
-cookbook_file '/tmp/railsapp_init.sh' do
-  source 'railsapp_init.sh'
-  mode '0755'
-end
+systemd_unit 'rorapp.service' do
+  content <<-EOU.gsub(/^\s+/, '')
+  [Unit]
+  Description=rorapp
 
-execute 'bash /tmp/railsapp_init.sh' do
-  action :run
+  [Service]
+  Type=simple
+  User=root
+  Group=root
+
+  EnvironmentFile=
+  EnvironmentFile=
+  ExecStart=/usr/local/bin/rails server -b 0.0.0.0
+  Restart=never
+  WorkingDirectory=/var/www/railsapp/project_management_demo
+
+  [Install]
+  WantedBy=multi-user.target
+  EOU
+
+  action [:create, :enable, :start]
 end

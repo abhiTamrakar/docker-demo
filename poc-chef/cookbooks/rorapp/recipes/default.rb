@@ -62,10 +62,11 @@ execute 'rake db:migrate' do
   action :run
 end
 
-bash 'start rails server' do
-  cwd ::File.dirname('/var/www/railsapp/project_management_demo')
-  code <<-EOH
-    sudo nohup rails server -b 0.0.0.0 &
-    EOH
+cookbook_file '/tmp/railsapp_init.sh' do
+  source 'railsapp_init.sh'
+  mode '0755'
+end
+
+execute 'bash /tmp/railsapp_init.sh' do
   action :run
 end

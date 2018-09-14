@@ -1,7 +1,12 @@
-
 - module: prometheus
   metricsets:
     - stats
   period: 10s
-  hosts: ["<%= @metrics_host %>:9100"]
-  metrics_path: /metrics
+  hosts: ["<%= @es_host %>:9090"]
+  #metrics_path: /metrics
+    
+- module: prometheus
+  metricsets:
+    - collector
+  period: 10s
+  hosts: ["<%= @es_host %>:9090"]

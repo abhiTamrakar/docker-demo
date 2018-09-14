@@ -5,7 +5,8 @@
 initialize() {
 if [ -d /var/www/railsapp/project_management_demo ]; then
   cd /var/www/railsapp/project_management_demo && \
-  nohup rails server -b 0.0.0.0 &
+  nohup rails server -b 0.0.0.0 </dev/null &>/dev/null &
+  echo -e "starting rails server with pid $!"
 else
   echo -e "application dir not found"
 fi

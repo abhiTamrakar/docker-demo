@@ -34,3 +34,8 @@ variable "orgip" {
     description = "IP address cidr for your organization"
     default = "103.6.32.0/24" #some value
 }
+
+variable "jenkinsip" {
+    description = "IP address of the jenkins machine"
+    default = "18.223.141.249/32" #some value
+}

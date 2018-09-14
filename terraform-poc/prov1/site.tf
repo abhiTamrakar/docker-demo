@@ -11,6 +11,7 @@ module "vpc" {
   private_cidr = "${var.private_subnet_cidr}"
   ssh_key = "${var.aws_key_name}"
   organization_ip = "${var.orgip}"
+  jenkins_ip = "${var.jenkinsip}"
 }
 
 module "instances" {

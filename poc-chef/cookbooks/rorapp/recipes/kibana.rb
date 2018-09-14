@@ -8,7 +8,7 @@ user 'install | create user' do
 end
 
 execute "install | download deb package" do 
-  command 'wget https://artifacts.elastic.co/downloads/kibana/kibana-6.4.0-amd64.deb && dpkg -i kibana-6.4.0-amd64.deb'
+  command 'wget https://artifacts.elastic.co/downloads/kibana/kibana-6.2.3-amd64.deb && dpkg -i kibana-6.2.3-amd64.deb'
   cwd "/tmp/"
 end
 

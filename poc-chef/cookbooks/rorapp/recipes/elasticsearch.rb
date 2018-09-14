@@ -8,7 +8,7 @@ user 'install | create user' do
 end
 
 execute "install | download deb package" do 
-  command 'wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.4.0.deb && dpkg -i elasticsearch-6.4.0.deb'
+  command 'wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.2.3.deb && dpkg -i elasticsearch-6.2.3.deb'
   cwd "/tmp/"
 end
 

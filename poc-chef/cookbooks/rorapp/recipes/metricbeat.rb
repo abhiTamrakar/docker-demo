@@ -3,7 +3,7 @@ package %w(software-properties-common apt-transport-https default-jre) do
 end
 
 execute "install | download deb package" do 
-  command 'wget https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-6.4.0-amd64.deb && dpkg -i metricbeat-6.4.0-amd64.deb'
+  command 'wget https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-6.2.3-amd64.deb && dpkg -i metricbeat-6.2.3-amd64.deb'
   cwd "/tmp/"
 end
 
@@ -50,4 +50,6 @@ end
 execute 'metricbeat setup' do
   action :run
   ignore_failure true
+  retries 3
+  retry_delay 120
 end

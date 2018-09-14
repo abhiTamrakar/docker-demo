@@ -21,7 +21,7 @@ resource "aws_security_group" "demo2_nat" {
         from_port = 22
         to_port = 22
         protocol = "tcp"
-        cidr_blocks = ["${var.organization_ip}"]
+        cidr_blocks = ["${var.organization_ip}","${var.jenkins_ip}"]
     }
     ingress {
         from_port = -1

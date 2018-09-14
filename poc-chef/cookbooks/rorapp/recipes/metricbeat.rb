@@ -3,7 +3,7 @@ package %w(software-properties-common apt-transport-https default-jre) do
 end
 
 execute "install | download deb package" do 
-  command 'wget https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-6.4.0-amd64.deb && dpkg -i metricbeat-6.4.0-amd64.deb'
+  command "wget https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-#{node['es_version']}-amd64.deb && dpkg -i metricbeat-#{node['es_version']}-amd64.deb"
   cwd "/tmp/"
 end
 
@@ -35,8 +35,6 @@ template "/etc/metricbeat/modules.d/#{mod}.yml" do
   variables(dbhost: node['dbhost'],
             dbpassword: node['dbpassword'],
             dbuser: node['dbuser'],
-            metrics_host: node['metrics_host'],
-            mysql_host: node['mysql_host'],
             es_host: node['es_host'])
   action :create
 end

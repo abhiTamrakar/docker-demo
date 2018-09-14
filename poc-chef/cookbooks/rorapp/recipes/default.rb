@@ -48,6 +48,8 @@ execute 'bundle' do
   cwd '/var/www/railsapp/project_management_demo'
   user 'ubuntu'
   action :run
+  retries 2
+  retry_delay 10s
 end
 
 execute 'rake db:create' do

@@ -49,7 +49,7 @@ execute 'bundle' do
   user 'ubuntu'
   action :run
   retries 2
-  retry_delay 10s
+  retry_delay 10
 end
 
 execute 'rake db:create' do

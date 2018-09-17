@@ -1,3 +1,10 @@
+include_recipe 'hostsfile'
+
+hostsfile_entry "#{node['ipaddress']}" do
+  hostname 'localhost'
+  action :create
+end
+
 package %w(software-properties-common apt-transport-https default-jre) do
   action :install
 end
@@ -18,7 +25,8 @@ template "/etc/kibana/kibana.yml" do
   group 'kibana'
   mode '0660'
   variables(ext_ip: node['ext_ip'],
-           es_host: node['es_host'])
+           es_host: node['es_host'],
+           nginx_ip: node['ipaddress'])
   action :create
 end
 

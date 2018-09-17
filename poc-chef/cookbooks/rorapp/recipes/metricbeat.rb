@@ -45,8 +45,8 @@ systemd_unit 'metricbeat.service' do
   action [:enable, :restart]
 end
 
-execute 'metricbeat setup' do
+execute 'setup| metricbeat' do
+  comamnd "echo 'metricbeat setup'| at -m now + 5 minute"
   action :run
-  retries 3
-  retry_delay 120
+  ignore_failure true
 end

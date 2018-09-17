@@ -2,7 +2,7 @@
   metricsets:
     - stats
   period: 10s
-  hosts: ["<%= @es_host %>:9090"]
+  hosts: ["<%= @es_host %>:9100"]
   metrics_path: /metrics
   namespace: prom_metrics_stats
 
@@ -10,6 +10,6 @@
   metricsets:
     - collector
   period: 10s
-  hosts: ["<%= @es_host %>:9090"]
+  hosts: ["<%= @es_host %>:9100"]
   metrics_path: /metrics
   namespace: prom_metrics_collector

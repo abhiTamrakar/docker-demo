@@ -22,7 +22,7 @@ setup.template.settings:
 # Starting with Beats version 6.0.0, the dashboards are loaded via the Kibana API.
 # This requires a Kibana endpoint configuration.
 setup.kibana:
-  host: "127.0.0.1:5601"
+  host: "<%= @nginx_ip %>:5601"
 
 #================================ Outputs =====================================
 

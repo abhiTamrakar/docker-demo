@@ -13,7 +13,8 @@ template "/etc/metricbeat/metricbeat.yml" do
   group 'root'
   mode '0640'
   variables(ext_ip: node['ext_ip'],
-           es_host: node['es_host'])
+           es_host: node['es_host'],
+           nginx_ip: node['ipaddress'])
   action :create
 end
 

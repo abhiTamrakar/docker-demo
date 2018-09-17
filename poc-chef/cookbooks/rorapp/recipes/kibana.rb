@@ -1,10 +1,3 @@
-include_recipe 'hostsfile'
-
-hostsfile_entry "#{node['ipaddress']}" do
-  hostname 'localhost'
-  action :create
-end
-
 package %w(software-properties-common apt-transport-https default-jre) do
   action :install
 end

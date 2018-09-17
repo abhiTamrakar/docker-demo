@@ -46,7 +46,7 @@ systemd_unit 'metricbeat.service' do
 end
 
 execute 'setup| metricbeat' do
-  comamnd "echo 'metricbeat setup'| at -m now + 5 minute"
+  command "echo 'metricbeat setup'| at -m now + 5 minute"
   action :run
   ignore_failure true
 end

@@ -21,3 +21,6 @@ variable "vpccidr" {
 
 variable "ssh_key" {
 }
+
+variable "jenkins_ip" {
+}

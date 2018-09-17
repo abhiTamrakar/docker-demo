@@ -9,7 +9,7 @@ resource "aws_security_group" "demo2_rorsg" {
         from_port = 80
         to_port = 80
         protocol = "tcp"
-        cidr_blocks = ["${var.organization_ip}"]
+        cidr_blocks = ["${var.organization_ip}","${var.jenkins_ip}"]
     }
     ingress {
         from_port = 9100

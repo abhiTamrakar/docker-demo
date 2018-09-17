@@ -24,6 +24,7 @@ module "instances" {
   organization_ip = "${var.orgip}"
   vpccidr = "${var.vpc_cidr}"
   private_cidr = "${var.private_subnet_cidr}"
+  jenkins_ip = "${var.jenkinsip}"
 }
 
 #output

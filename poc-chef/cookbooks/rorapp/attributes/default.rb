@@ -5,6 +5,7 @@ default['dbname'] = 'project_management'
 default['ext_ip'] = ''
 default['es_host'] = ''
 default['es_version'] = '6.4.0'
+default['app_ip'] = ''
 default['modules'] = %w(system prometheus elasticsearch mysql)
 default['hosts'] = ''
 default['configs'] = %w(rorapp kibana)

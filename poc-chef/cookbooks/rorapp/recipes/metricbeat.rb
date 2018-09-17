@@ -14,7 +14,7 @@ template "/etc/metricbeat/metricbeat.yml" do
   mode '0640'
   variables(ext_ip: node['ext_ip'],
            es_host: node['es_host'],
-           nginx_ip: node['ipaddress'])
+           nginx_ip: node['app_ip'])
   action :create
 end
 

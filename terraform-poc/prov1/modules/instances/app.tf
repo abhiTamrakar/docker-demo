@@ -94,7 +94,7 @@ resource "aws_security_group" "demo2_rorsg" {
 resource "aws_instance" "demo2_rorapp" {
     ami = "${var.amiid}"
     availability_zone = "us-east-2a"
-    instance_type = "t2.micro"
+    instance_type = "t2.medium"
     key_name = "${var.ssh_key}"
     vpc_security_group_ids = ["${aws_security_group.demo2_rorsg.id}"]
     subnet_id = "${var.public_subnet_id}"

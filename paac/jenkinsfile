@@ -24,13 +24,13 @@ pipeline {
 			withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: '6c036cec-52cd-40e9-9860-24740c74200e', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
 					sh '''
 						#!/bin/bash
-						$TERRAFORM init && \
+						$TERRAFORM init && \\
 						if [ x${TFWORKSPACE} = x ]; then
 							TFWORKSPACE=workspace-${BUILD_NUMBER}
 						fi
-						$TERRAFORM workspace new "${TFWORKSPACE}" && \
-						echo -e "\n\n\WORKSPACE: ${TFWORKSPACE}\n\n" && \
-						$TERRAFORM plan -out thisplan.tfplan && \
+						$TERRAFORM workspace new "${TFWORKSPACE}" && \\
+						echo -e "\n\n\WORKSPACE: ${TFWORKSPACE}\n\n" && \\
+						$TERRAFORM plan -out thisplan.tfplan && \\
 						$TERRAFORM apply "thisplan.tfplan"
 					'''
 			}
@@ -47,7 +47,7 @@ pipeline {
 					  exit 1
 					fi
 					
-					$TERRAFORM workspace select "${TFWORKSPACE}" && \
+					$TERRAFORM workspace select "${TFWORKSPACE}" && \\
 					app_pubip=$($TERRAFORM output app_pubendpoint)
 					app_privip=$($TERRAFORM output app_privendpoint)
 					db_ip=$($TERRAFORM output db_endpoint)
@@ -87,10 +87,10 @@ pipeline {
 					# run ssh and copy the json files
 					
 					for ip in app_privip db_ip; do
-					scp -i /var/lib/jenkins/keys/POC_Ohio.pem \
-						-o StrictHostKeyChecking=no \
-					    -o ProxyCommand="ssh -n -i /var/lib/jenkins/keys/POC_Ohio.pem -o StrictHostKeyChecking=no -W %h:%p ec2-user@${nat_ip}" \
-					    "${OUTPUT_JSONPATH}"/runlist-${ip%_*}.json \
+					scp -i /var/lib/jenkins/keys/POC_Ohio.pem \\
+						-o StrictHostKeyChecking=no \\
+					    -o ProxyCommand="ssh -n -i /var/lib/jenkins/keys/POC_Ohio.pem -o StrictHostKeyChecking=no -W %h:%p ec2-user@${nat_ip}" \\
+					    "${OUTPUT_JSONPATH}"/runlist-${ip%_*}.json \\
 					    ubuntu@${!ip}:~
 					done
 
@@ -115,8 +115,8 @@ pipeline {
 		stage('configure with chef') {
 				sh '''#!/bin/bash
 					if [ -f ${WORKSPACE}/extracted.txt ]; then
-					  . ${WORKSPACE}/extracted.txt && \
-					  echo -e "completed reading extraction" || \
+					  . ${WORKSPACE}/extracted.txt && \\
+					  echo -e "completed reading extraction" || \\
 					  { echo -e "error in reading extracted output."; exit 1; }
 					else
 					  echo -e "no source detected to read extracted output information."
@@ -124,10 +124,10 @@ pipeline {
 					fi
 					
 					for ip in db_ip app_ip; do
-					ssh -n -i /var/lib/jenkins/keys/POC_Ohio.pem \
-						-o StrictHostKeyChecking=no \
-					    -o ProxyCommand="ssh -n -i /var/lib/jenkins/keys/POC_Ohio.pem -o StrictHostKeyChecking=no -W %h:%p ec2-user@${nat_ip}" \
-					    ubuntu@${!ip} \
+					ssh -n -i /var/lib/jenkins/keys/POC_Ohio.pem \\
+						-o StrictHostKeyChecking=no \\
+					    -o ProxyCommand="ssh -n -i /var/lib/jenkins/keys/POC_Ohio.pem -o StrictHostKeyChecking=no -W %h:%p ec2-user@${nat_ip}" \\
+					    ubuntu@${!ip} \\
 					    "sudo apt update && sudo chef-client -j runlist-${ip%_*}.json"
 					done
 					'''

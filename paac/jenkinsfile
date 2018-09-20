@@ -1,0 +1,222 @@
+pipeline {
+
+  agent any
+  
+  def TFDIRNAME = "${WORKSPACE}/terraform-poc/prov1"
+  def COOKBOOK_BASEPATH = "${WORKSPACE}/poc-chef"
+  def TFWORKSPACENAME = "workspace_${BUILD_NUMBER}"
+  def OUTPUT_JSONPATH = "${WORKSPACE}"
+  
+  // using the Timestamper plugin we can add timestamps to the console log
+  options {
+    timestamps()
+  }
+  
+	description("POC1 ror automation parent pipeline")
+	keepDependencies(false)
+	parameters {
+		stringParam("TFDIR", "${TFDIRNAME}", "value for terraform source directory.")
+		stringParam("TFWORKSPACE", "${TFWORKSPACENAME}", """value for terraform work-space.\ndefault will be generated for CREATE action.\nmandatory parameter for DESTROY action""")
+	}
+  ansiColor('xterm') {
+	stages {
+	    stage('chckout SCM') {
+			git 'https://github.com/abhiTamrakar/docker-demo.git'
+		}
+		stage('run terraform') {
+			withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: '6c036cec-52cd-40e9-9860-24740c74200e', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+					sh '''
+						#!/bin/bash
+						$TERRAFORM init && \
+						if [ x${TFWORKSPACE} = x ]; then
+							TFWORKSPACE=workspace-${BUILD_NUMBER}
+						fi
+						$TERRAFORM workspace new "${TFWORKSPACE}" && \
+						echo -e "\n\n\WORKSPACE: ${TFWORKSPACE}\n\n" && \
+						$TERRAFORM plan -out thisplan.tfplan && \
+						$TERRAFORM apply "thisplan.tfplan"
+					'''
+			}
+		}
+		stage('extract output') {
+			withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: '6c036cec-52cd-40e9-9860-24740c74200e', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+					sh '''
+					#!/bin/bash		
+					TERRAFORM=$(which terraform)
+					cd ${TFDIR}
+					
+					if [ x${TFWORKSPACE} = x ]; then
+					  echo -e "[ERROR] terraform workspace should be provided in tfworkspace variable."
+					  exit 1
+					fi
+					
+					$TERRAFORM workspace select "${TFWORKSPACE}" && \
+					app_pubip=$($TERRAFORM output app_pubendpoint)
+					app_privip=$($TERRAFORM output app_privendpoint)
+					db_ip=$($TERRAFORM output db_endpoint)
+					nat_ip=$($TERRAFORM output nat_endpoint)
+										
+					echo -ne "{
+					  \"ext_ip\": \"${app_pubip}\",
+					  \"es_host\": \"${db_ip}\",
+					  \"es_version\": \"6.2.4\",
+					  \"dbhost\": \"${db_ip}\",
+					  \"dbname\": \"project_management\",
+					  \"dbpassword\": \"r00t@123\",
+					  \"dbuser\": \"root\",
+					  \"app_ip\": \"${app_privip}\",  
+					  \"modules\": [\"system\",\"prometheus\",\"elasticsearch\",\"mysql\"],
+					  \"run_list\": [ \"role[appserver]\" ]
+					}" > ${OUTPUT_JSONPATH}/runlist-app.json
+					
+					
+					echo -ne "{
+					  \"ext_ip\": \"${app_pubip}\",
+					  \"es_host\": \"${db_ip}\",
+					  \"es_version\": \"6.2.4\",  
+					  \"dbhost\": \"${db_ip}\",
+					  \"dbname\": \"project_management\",
+					  \"dbpassword\": \"r00t@123\",
+					  \"dbuser\": \"root\",
+					  \"modules\": [\"system\"],
+					  \"app_ip\": \"${app_privip}\",
+					  \"hosts\": [\"${app_privip}\",\"${db_ip}\"],
+					  \"fluentd\": {
+					       \"node_type\": \"server\"
+					   },
+					  \"run_list\": [ \"role[data]\" ]
+					}" > ${OUTPUT_JSONPATH}/runlist-db.json
+					
+					# run ssh and copy the json files
+					
+					for ip in app_privip db_ip; do
+					scp -i /var/lib/jenkins/keys/POC_Ohio.pem \
+						-o StrictHostKeyChecking=no \
+					    -o ProxyCommand="ssh -n -i /var/lib/jenkins/keys/POC_Ohio.pem -o StrictHostKeyChecking=no -W %h:%p ec2-user@${nat_ip}" \
+					    "${OUTPUT_JSONPATH}"/runlist-${ip%_*}.json \
+					    ubuntu@${!ip}:~
+					done
+
+					if [ -e ${WORKSPACE}/extracted.txt ]; then
+						rm -fv ${WORKSPACE}/extracted.txt
+					fi
+					
+					echo -e "app_ip=${app_privip}
+					db_ip=${db_ip}
+					nat_ip=${nat_ip}
+					app_pubip=${app_pubip}" > ${WORKSPACE}/extracted.txt
+					'''
+			}
+		}
+		stage('upload cookbooks'){
+				sh '''
+				#!/bin/bash
+				KNIFE=$(which knife)
+				$KNIFE cookbook upload -c ${COOKBOOK_BASEPATH}/.chef/knife.rb -a
+				'''
+		}
+		stage('configure with chef') {
+				sh '''#!/bin/bash
+					if [ -f ${WORKSPACE}/extracted.txt ]; then
+					  . ${WORKSPACE}/extracted.txt && \
+					  echo -e "completed reading extraction" || \
+					  { echo -e "error in reading extracted output."; exit 1; }
+					else
+					  echo -e "no source detected to read extracted output information."
+					  exit 1
+					fi
+					
+					for ip in db_ip app_ip; do
+					ssh -n -i /var/lib/jenkins/keys/POC_Ohio.pem \
+						-o StrictHostKeyChecking=no \
+					    -o ProxyCommand="ssh -n -i /var/lib/jenkins/keys/POC_Ohio.pem -o StrictHostKeyChecking=no -W %h:%p ec2-user@${nat_ip}" \
+					    ubuntu@${!ip} \
+					    "sudo apt update && sudo chef-client -j runlist-${ip%_*}.json"
+					done
+					'''
+		}
+		stage('create status page') {
+				sh '''#!/bin/bash
+					file="${WORKSPACE}/extracted.txt"
+					outfile="${WORKSPACE}/status.html"
+					
+					[ ! -e $file ] && { echo -e "no such file or directory!!"; exit 1; }
+					
+					echo -e "<!DOCTYPE html>
+					<html>
+					<head>
+					<style>
+					table {
+					    font-family: arial, sans-serif;
+					    border-collapse: collapse;
+					    width: 100%;
+					}
+					
+					td, th {
+					    border: 1px solid #dddddd;
+					    text-align: left;
+					    padding: 8px;
+					}
+					
+					tr:nth-child(even) {
+					    background-color: #dddddd;
+					}
+					</style>
+					</head>
+					<body>
+					
+					<h2>Deployment details</h2>
+					
+					<table border="1px">
+					<tr>
+					    <th>Name</th>
+					    <th>IPaddress</th>
+					 </tr>" > ${outfile}
+					 
+					while IFS='=' read -r KEY VALUE; do
+					
+					echo -ne "<tr>
+					    <td>$KEY</td>
+					    <td><a href=http://$VALUE>$VALUE</a></td>
+					</tr>" >> ${outfile}
+					
+					done < $file
+					
+					echo -ne "</table>
+					
+					</body>
+					</html>" >>${outfile}
+					'''		
+		}
+	}
+	publishers {
+		richTextPublisher {
+			stableText("${FILE:./status.html}")
+			unstableText("")
+			failedText("")
+			abortedText("")
+			nullAction(0)
+			unstableAsStable(true)
+			failedAsStable(true)
+			abortedAsStable(true)
+			parserName("HTML")
+		}
+	}
+	wrappers {
+		preBuildCleanup {
+			deleteDirectories(true)
+			cleanupParameter()
+		}
+	}
+	configure {
+		it / 'properties' / 'jenkins.model.BuildDiscarderProperty' {
+			strategy {
+				'daysToKeep'('1')
+				'numToKeep'('1')
+				'artifactDaysToKeep'('10')
+				'artifactNumToKeep'('1')
+			}
+		}
+	}
+}
+}

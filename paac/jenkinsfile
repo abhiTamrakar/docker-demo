@@ -20,9 +20,6 @@ pipeline {
 	}
   ansiColor('xterm') {
 	stages {
-	    stage('chckout SCM') {
-			git 'https://github.com/abhiTamrakar/docker-demo.git'
-		}
 		stage('run terraform') {
 			withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: '6c036cec-52cd-40e9-9860-24740c74200e', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
 					sh '''

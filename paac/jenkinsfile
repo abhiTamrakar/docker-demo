@@ -16,7 +16,7 @@ pipeline {
 	keepDependencies(false)
 	parameters {
 		stringParam("TFDIR", "${TFDIRNAME}", "value for terraform source directory.")
-		stringParam("TFWORKSPACE", "${TFWORKSPACENAME}", """value for terraform work-space.\\ndefault will be generated for CREATE action.\\nmandatory parameter for DESTROY action""")
+		stringParam("TFWORKSPACE", "${TFWORKSPACENAME}", "value for terraform work-space.\\ndefault will be generated for CREATE action.\\nmandatory parameter for DESTROY action")
 	}
   ansiColor('xterm') {
 	stages {
@@ -164,7 +164,7 @@ pipeline {
 					
 					<h2>Deployment details</h2>
 					
-					<table border="1px">
+					<table border=\\"1px\\">
 					<tr>
 					    <th>Name</th>
 					    <th>IPaddress</th>

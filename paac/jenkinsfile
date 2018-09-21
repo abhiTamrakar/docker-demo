@@ -90,7 +90,7 @@ pipeline {
 					scp -i /var/lib/jenkins/keys/POC_Ohio.pem \\
 						-o StrictHostKeyChecking=no \\
 					    -o ProxyCommand="ssh -n -i /var/lib/jenkins/keys/POC_Ohio.pem -o StrictHostKeyChecking=no -W %h:%p ec2-user@${nat_ip}" \\
-					    "${OUTPUT_JSONPATH}"/runlist-${ip%_*}.json \\
+					    ${OUTPUT_JSONPATH}/runlist-${ip%_*}.json \\
 					    ubuntu@${!ip}:~
 					done
 

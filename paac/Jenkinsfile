@@ -1,4 +1,3 @@
-#!groovy
 pipeline {
 
   agent any
@@ -10,11 +9,10 @@ pipeline {
 	OUTPUT_JSONPATH = "${WORKSPACE}"
   }
   parameters {
-	stringParam("TFDIR", "${TFDIRNAME}", "value for terraform source directory.")
-	stringParam("TFWORKSPACE", "${TFWORKSPACENAME}", "value for terraform work-space.")
-   }
-  wrap([$class: 'AnsiColorBuildWrapper', colorMapName: 'xterm']) {
-		stages {
+	string("TFDIR", "${TFDIRNAME}", "value for terraform source directory.")
+	string("TFWORKSPACE", "${TFWORKSPACENAME}", "value for terraform work-space.")
+  }
+	stages {
 			stage('run terraform') {
 			steps {
 				script{
@@ -202,5 +200,4 @@ background-color: #dddddd;
 			step([$class: 'RichTextPublisher', abortedAsStable: true, abortedText: '', failedAsStable: true, failedText: '', nullAction: '0', parserName: 'HTML', stableText: '${FILE:./status.html}', unstableAsStable: true, unstableText: ''])
 		}
 	}
-  }
 }

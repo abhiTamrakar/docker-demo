@@ -16,7 +16,7 @@ pipeline {
 	keepDependencies(false)
 	parameters {
 		stringParam("TFDIR", "${TFDIRNAME}", "value for terraform source directory.")
-		stringParam("TFWORKSPACE", "${TFWORKSPACENAME}", """value for terraform work-space.\ndefault will be generated for CREATE action.\nmandatory parameter for DESTROY action""")
+		stringParam("TFWORKSPACE", "${TFWORKSPACENAME}", """value for terraform work-space.\\ndefault will be generated for CREATE action.\\nmandatory parameter for DESTROY action""")
 	}
   ansiColor('xterm') {
 	stages {
@@ -29,7 +29,7 @@ pipeline {
 							TFWORKSPACE=workspace-${BUILD_NUMBER}
 						fi
 						$TERRAFORM workspace new "${TFWORKSPACE}" && \\
-						echo -e "\n\n\WORKSPACE: ${TFWORKSPACE}\n\n" && \\
+						echo -e "\\n\\n WORKSPACE: ${TFWORKSPACE}\\n\\n" && \\
 						$TERRAFORM plan -out thisplan.tfplan && \\
 						$TERRAFORM apply "thisplan.tfplan"
 					'''
@@ -54,34 +54,34 @@ pipeline {
 					nat_ip=$($TERRAFORM output nat_endpoint)
 										
 					echo -ne "{
-					  \"ext_ip\": \"${app_pubip}\",
-					  \"es_host\": \"${db_ip}\",
-					  \"es_version\": \"6.2.4\",
-					  \"dbhost\": \"${db_ip}\",
-					  \"dbname\": \"project_management\",
-					  \"dbpassword\": \"r00t@123\",
-					  \"dbuser\": \"root\",
-					  \"app_ip\": \"${app_privip}\",  
-					  \"modules\": [\"system\",\"prometheus\",\"elasticsearch\",\"mysql\"],
-					  \"run_list\": [ \"role[appserver]\" ]
+					  \\"ext_ip\\": \\"${app_pubip}\\",
+					  \\"es_host\\": \\"${db_ip}\\",
+					  \\"es_version\\": \\"6.2.4\\",
+					  \\"dbhost\\": \\"${db_ip}\\",
+					  \\"dbname\\": \\"project_management\\",
+					  \\"dbpassword\\": \\"r00t@123\\",
+					  \\"dbuser\\": \\"root\\",
+					  \\"app_ip\\": \\"${app_privip}\\",  
+					  \\"modules\\": [\\"system\\",\\"prometheus\\",\\"elasticsearch\\",\\"mysql\\"],
+					  \\"run_list\\": [ \\"role[appserver]\\" ]
 					}" > ${OUTPUT_JSONPATH}/runlist-app.json
 					
 					
 					echo -ne "{
-					  \"ext_ip\": \"${app_pubip}\",
-					  \"es_host\": \"${db_ip}\",
-					  \"es_version\": \"6.2.4\",  
-					  \"dbhost\": \"${db_ip}\",
-					  \"dbname\": \"project_management\",
-					  \"dbpassword\": \"r00t@123\",
-					  \"dbuser\": \"root\",
-					  \"modules\": [\"system\"],
-					  \"app_ip\": \"${app_privip}\",
-					  \"hosts\": [\"${app_privip}\",\"${db_ip}\"],
-					  \"fluentd\": {
-					       \"node_type\": \"server\"
+					  \\"ext_ip\\": \\"${app_pubip}\\",
+					  \\"es_host\\": \\"${db_ip}\\",
+					  \\"es_version\\": \\"6.2.4\\",  
+					  \\"dbhost\\": \\"${db_ip}\\",
+					  \\"dbname\\": \\"project_management\\",
+					  \\"dbpassword\\": \\"r00t@123\\",
+					  \\"dbuser\\": \\"root\\",
+					  \\"modules\\": [\\"system\\"],
+					  \\"app_ip\\": \\"${app_privip}\\",
+					  \\"hosts\\": [\\"${app_privip}\\",\\"${db_ip}\\"],
+					  \\"fluentd\\": {
+					       \\"node_type\\": \\"server\\"
 					   },
-					  \"run_list\": [ \"role[data]\" ]
+					  \\"run_list\\": [ \\"role[data]\\" ]
 					}" > ${OUTPUT_JSONPATH}/runlist-db.json
 					
 					# run ssh and copy the json files

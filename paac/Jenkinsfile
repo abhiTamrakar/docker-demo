@@ -7,7 +7,7 @@ pipeline {
 	OUTPUT_JSONPATH = "${WORKSPACE}"
   }
   parameters {
-	string defaultValue: '${WORKSPACE}/terraform-poc/prov1', description: 'value for terraform source directory', name: 'TFDIR', trim: true
+	string defaultValue: 'terraform-poc/prov1', description: 'value for terraform source directory', name: 'TFDIR', trim: true
 	string defaultValue: 'workspace_${BUILD_NUMBER}', description: 'value for terraform work-space.', name: 'TFWORKSPACE', trim: true
   }
 	stages {
@@ -15,7 +15,7 @@ pipeline {
 			steps {
 				script{
 					withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: '6c036cec-52cd-40e9-9860-24740c74200e', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
-					sh '''
+					sh("""
 					#!/bin/bash
 					TERRAFORM=$(which terraform)
 					
@@ -28,7 +28,7 @@ pipeline {
 					echo -e "\\n\\n WORKSPACE: ${TFWORKSPACE}\\n\\n" && \\
 					$TERRAFORM plan -out thisplan.tfplan && \\
 					$TERRAFORM apply "thisplan.tfplan"
-					'''
+					""")
 					}
 				}
 			}	
@@ -37,7 +37,7 @@ pipeline {
 			steps {
 				script{		
 					withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: '6c036cec-52cd-40e9-9860-24740c74200e', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
-					sh '''
+					sh("""
 					#!/bin/bash		
 					TERRAFORM=$(which terraform)
 					cd ${TFDIR}
@@ -100,7 +100,7 @@ pipeline {
 db_ip=${db_ip}
 nat_ip=${nat_ip}
 app_pubip=${app_pubip}" > ${WORKSPACE}/extracted.txt
-'''
+""")
 					}
 				}
 			}
@@ -108,18 +108,19 @@ app_pubip=${app_pubip}" > ${WORKSPACE}/extracted.txt
 		stage('upload cookbooks'){
 			steps {
 				script{		
-					sh '''
+					sh("""
 				#!/bin/bash
 				KNIFE=$(which knife)
 				$KNIFE cookbook upload -c ${COOKBOOK_BASEPATH}/.chef/knife.rb -a
-				'''
+				""")
 				}
 			}
 		}
 		stage('configure with chef') {
 			steps {
 				script{		
-					sh '''#!/bin/bash
+					sh("""
+					#!/bin/bash
 					if [ -f ${WORKSPACE}/extracted.txt ]; then
 						. ${WORKSPACE}/extracted.txt && \\
 						echo -e "completed reading extraction" || \\
@@ -136,14 +137,15 @@ app_pubip=${app_pubip}" > ${WORKSPACE}/extracted.txt
 						ubuntu@${!ip} \\
 						"sudo apt update && sudo chef-client -j runlist-${ip%_*}.json"
 					done
-					'''
+					""")
 				}
 			}
 		}
 		stage('create status page') {
 			steps {
 				script{		
-					sh '''#!/bin/bash
+					sh("""
+					#!/bin/bash
 					file="${WORKSPACE}/extracted.txt"
 					outfile="${WORKSPACE}/status.html"
 				
@@ -191,7 +193,7 @@ background-color: #dddddd;
 						echo -ne "</table>
 </body>
 </html>" >>${outfile}
-				'''
+				""")
 				}
 			}
 		}

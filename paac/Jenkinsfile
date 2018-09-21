@@ -1,3 +1,4 @@
+#!groovy
 pipeline {
 
   agent any
@@ -16,7 +17,7 @@ pipeline {
 	keepDependencies(false)
 	parameters {
 		stringParam("TFDIR", "${TFDIRNAME}", "value for terraform source directory.")
-		stringParam("TFWORKSPACE", "${TFWORKSPACENAME}", "value for terraform work-space.\\ndefault will be generated for CREATE action.\\nmandatory parameter for DESTROY action")
+		stringParam("TFWORKSPACE", "${TFWORKSPACENAME}", "value for terraform work-space.")
 	}
   ansiColor('xterm') {
 	stages {

@@ -3,14 +3,12 @@ pipeline {
   agent any
   
   environment {
-	TFDIRNAME = "${WORKSPACE}/terraform-poc/prov1"
 	COOKBOOK_BASEPATH = "${WORKSPACE}/poc-chef"
-	TFWORKSPACENAME = "workspace_${BUILD_NUMBER}"
 	OUTPUT_JSONPATH = "${WORKSPACE}"
   }
   parameters {
-	string("TFDIR", "${TFDIRNAME}", "value for terraform source directory.")
-	string("TFWORKSPACE", "${TFWORKSPACENAME}", "value for terraform work-space.")
+	string defaultValue: '${WORKSPACE}/terraform-poc/prov1', description: 'value for terraform source directory', name: 'TFDIR', trim: true
+	string defaultValue: 'workspace_${BUILD_NUMBER}', description: 'value for terraform work-space.', name: 'TFWORKSPACE', trim: true
   }
 	stages {
 			stage('run terraform') {

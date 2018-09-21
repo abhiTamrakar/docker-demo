@@ -18,6 +18,8 @@ pipeline {
 					sh '''
 					#!/bin/bash
 					TERRAFORM=$(which terraform)
+					
+					cd ${TFDIR} && \\
 					$TERRAFORM init && \\
 					if [ x${TFWORKSPACE} = x ]; then
 						TFWORKSPACE=workspace-${BUILD_NUMBER}

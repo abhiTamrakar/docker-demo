@@ -205,15 +205,5 @@ pipeline {
 			cleanupParameter()
 		}
 	}
-	configure {
-		it / 'properties' / 'jenkins.model.BuildDiscarderProperty' {
-			strategy {
-				'daysToKeep'('1')
-				'numToKeep'('1')
-				'artifactDaysToKeep'('10')
-				'artifactNumToKeep'('1')
-			}
-		}
-	}
-}
+   }
 }

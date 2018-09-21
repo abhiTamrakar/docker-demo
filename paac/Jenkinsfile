@@ -17,17 +17,17 @@ pipeline {
 					withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: '6c036cec-52cd-40e9-9860-24740c74200e', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
 					sh("""
 					#!/bin/bash
-					TERRAFORM=$(which terraform)
+					TERRAFORM=\$(which terraform)
 					
 					cd ${TFDIR} && \\
-					$TERRAFORM init && \\
+					${TERRAFORM} init && \\
 					if [ x${TFWORKSPACE} = x ]; then
-						TFWORKSPACE=workspace-${BUILD_NUMBER}
+						TFWORKSPACE=workspace_${BUILD_NUMBER}
 					fi
-					$TERRAFORM workspace new "${TFWORKSPACE}" && \\
+					${TERRAFORM} workspace new "${TFWORKSPACE}" && \\
 					echo -e "\\n\\n WORKSPACE: ${TFWORKSPACE}\\n\\n" && \\
-					$TERRAFORM plan -out thisplan.tfplan && \\
-					$TERRAFORM apply "thisplan.tfplan"
+					${TERRAFORM} plan -out thisplan.tfplan && \\
+					${TERRAFORM} apply "thisplan.tfplan"
 					""")
 					}
 				}
@@ -47,11 +47,11 @@ pipeline {
 					exit 1
 					fi
 
-					$TERRAFORM workspace select "${TFWORKSPACE}" && \\
-					app_pubip=$($TERRAFORM output app_pubendpoint)
-					app_privip=$($TERRAFORM output app_privendpoint)
-					db_ip=$($TERRAFORM output db_endpoint)
-					nat_ip=$($TERRAFORM output nat_endpoint)
+					${TERRAFORM} workspace select "${TFWORKSPACE}" && \\
+					app_pubip=\$(${TERRAFORM} output app_pubendpoint)
+					app_privip=\$(${TERRAFORM} output app_privendpoint)
+					db_ip=\$(${TERRAFORM} output db_endpoint)
+					nat_ip=\$(${TERRAFORM} output nat_endpoint)
 	
 					echo -ne "{
 \\"ext_ip\\": \\"${app_pubip}\\",
@@ -110,8 +110,8 @@ app_pubip=${app_pubip}" > ${WORKSPACE}/extracted.txt
 				script{		
 					sh("""
 				#!/bin/bash
-				KNIFE=$(which knife)
-				$KNIFE cookbook upload -c ${COOKBOOK_BASEPATH}/.chef/knife.rb -a
+				KNIFE=\$(which knife)
+				${KNIFE} cookbook upload -c ${COOKBOOK_BASEPATH}/.chef/knife.rb -a
 				""")
 				}
 			}
@@ -186,10 +186,10 @@ background-color: #dddddd;
 
 						echo -ne "<tr>
 <td>$KEY</td>
-<td><a href=http://$VALUE>$VALUE</a></td>
+<td><a href=http://\$VALUE>\$VALUE</a></td>
 </tr>" >> ${outfile}
 				
-						done < $file
+						done < \$file
 						echo -ne "</table>
 </body>
 </html>" >>${outfile}
